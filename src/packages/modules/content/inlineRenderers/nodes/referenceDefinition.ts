@@ -21,7 +21,7 @@ export default class MEReferenceDefinition extends MENode {
     renderSelf(data: MENodeData) {
 
         const { leftBracket, rightBracket, titleMarker, raw, leftTitleSpace, rightTitleSpace, title, href } = data;
-        if(!this.nodes.el) {
+        if(!this.nodes.el || this.nodes.el.childNodes.length !== 5) {
             this.nodes.el = this.make("span", [CLASS_NAMES.ME_NODE]);
             this.nodes.el.innerHTML = `<span class="${CLASS_NAMES.ME_FIXED_MARKER}"></span><span class="${CLASS_NAMES.ME_REFERENCE_LABEL}"></span><span class="${CLASS_NAMES.ME_FIXED_MARKER}"></span><span class="${CLASS_NAMES.ME_REFERENCE_TITLE}"></span><span class="${CLASS_NAMES.ME_FIXED_MARKER}"></span>`
             this.nodes.el.dataset.nodeType = this.type;
@@ -43,7 +43,7 @@ export default class MEReferenceDefinition extends MENode {
         }
 
         if(title !== this.nodes.el.childNodes[3].textContent) {
-            this.nodes.el.childNodes[3].textContent = middleMarker
+            this.nodes.el.childNodes[3].textContent = title
         }
 
         if(endMarker !== this.nodes.el.lastChild.textContent) {

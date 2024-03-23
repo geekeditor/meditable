@@ -82,7 +82,7 @@ const tokenizerFac = (
         leftHrefMarker: def[5] || "",
         href: def[6],
         rightHrefMarker: def[7] || "",
-        leftTitleSpace: def[8],
+        leftTitleSpace: def[8] || "",
         titleMarker: def[9] || "",
         title: def[10] || "",
         rightTitleSpace: def[11] || "",
