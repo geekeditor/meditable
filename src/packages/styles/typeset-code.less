@@ -1,0 +1,106 @@
+/* code html math ...code block style */
+pre.me-block--actived[data-block-type="frontmatter"]::before,
+pre.me-block--actived[data-block-type="frontmatter"]::after {
+    content: '---';
+}
+
+.me-block--actived[data-block-type="math-block"] pre::before,
+.me-block--actived[data-block-type="math-block"] pre::after {
+    content: '$$';
+}
+
+.me-block--actived[data-block-type="diagram-block"] pre[data-role="mermaid"]::before {
+    content: '``` mermaid';
+}
+
+.me-block--actived[data-block-type="diagram-block"] pre[data-role="flowchart"]::before {
+    content: '``` flowchart';
+}
+
+.me-block--actived[data-block-type="diagram-block"] pre[data-role="sequence"]::before {
+    content: '``` sequence';
+}
+.me-block--actived[data-block-type="diagram-block"] pre[data-role="vega-lite"]::before {
+    content: '``` vega-lite';
+}
+
+pre.me-block--actived[data-code-type="fenced"]::before,
+pre.me-block--actived[data-code-type="fenced"]::after,
+.me-block--actived[data-block-type="diagram-block"] pre::after {
+    content: '```';
+}
+
+pre.me-block--actived[data-block-type="frontmatter"]::before,
+pre.me-block--actived[data-block-type="frontmatter"]::after,
+.me-block--actived[data-block-type="diagram-block"] pre::before,
+.me-block--actived[data-block-type="diagram-block"] pre::after,
+pre.me-block--actived[data-code-type="fenced"]::before,
+pre.me-block--actived[data-code-type="fenced"]::after,
+.me-block--actived[data-block-type="math-block"] pre::before,
+.me-block--actived[data-block-type="math-block"] pre::after {
+    position: absolute;
+    left: 0;
+    color: var(--editor-color-30);
+    font-weight: 100;
+}
+
+pre.me-block--actived[data-block-type="frontmatter"]::before,
+.me-block--actived[data-block-type="diagram-block"] pre::before,
+.me-block--actived[data-block-type="math-block"] pre::before,
+pre.me-block--actived[data-code-type="fenced"]::before {
+    top: -20px;
+}
+
+pre.me-block--actived[data-block-type="frontmatter"]::after,
+.me-block--actived[data-block-type="diagram-block"] pre::after,
+.me-block--actived[data-block-type="math-block"] pre::after,
+pre.me-block--actived[data-code-type="fenced"]::after {
+    bottom: -23px;
+}
+
+.me-block--actived[data-code-type="fenced"] [data-block-type="code"]::after {
+    content: 'fenced';
+}
+
+.me-block--actived[data-code-type="infenced"] [data-block-type="code"]::after {
+    content: 'indented';
+}
+
+.me-block--actived[data-code-type="fenced"] [data-block-type="code"]::after,
+.me-block--actived[data-code-type="infenced"] [data-block-type="code"]::after {
+    position: absolute;
+    right: .5em;
+    bottom: 0;
+    z-index: 1;
+
+    color: var(--editor-color-30);
+}
+
+.me-language {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+
+    min-width: 20em;
+
+    font-weight: 600;
+    font-size: .8em;
+
+    opacity: 0;
+}
+
+.me-block--actived[data-block-type="code-block"] .me-language {
+    top: -1.8em;
+    z-index: initial;
+    opacity: 1;
+}
+
+.me-block--actived[data-block-type="code-block"] .me-language:empty::after {
+    color: var(--editor-color-10);
+    content: attr(hint);
+}
+
+.me-block--actived[data-code-type="fenced"]  .me-language {
+    left: 30px;
+}

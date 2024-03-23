@@ -1,0 +1,106 @@
+{
+  "name": "@geekeditor/meditable",
+  "version": "0.0.1",
+  "description": "A WYSIWYG markdown editor for web browser applications",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/geekeditor/meditable"
+  },
+  "bugs": "https://github.com/geekeditor/meditable/issues",
+  "homepage": "https://github.com/geekeditor/meditable#readme",
+  "scripts": {
+    "lint": "eslint --ext .js,.ts ./",
+    "test": "jest",
+    "dev": "webpack-dev-server --config scripts/webpack.dev.js",
+    "build": "npm run build:umd && npm run build:rollup",
+    "build:rollup": "rollup -c scripts/rollup.config.js",
+    "build:umd": "cross-env NODE_ENV=production webpack --config scripts/webpack.config.js"
+  },
+  "keywords": [],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./*": [
+      "./*"
+    ]
+  },
+  "author": "montisan <imontisan@gmail.com>",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.23.6",
+    "@babel/preset-env": "^7.23.6",
+    "@rollup/plugin-alias": "^5.0.1",
+    "@rollup/plugin-babel": "^6.0.3",
+    "@rollup/plugin-commonjs": "^25.0.3",
+    "@rollup/plugin-json": "^6.0.1",
+    "@rollup/plugin-node-resolve": "^15.1.0",
+    "@rollup/plugin-replace": "^5.0.2",
+    "@rollup/plugin-terser": "^0.4.3",
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.4.9",
+    "babel": "^6.23.0",
+    "babel-jest": "^29.7.0",
+    "clean-css": "^5.3.2",
+    "cross-env": "^7.0.3",
+    "css-loader": "^6.8.1",
+    "eslint": "^8.46.0",
+    "html-webpack-plugin": "^5.5.3",
+    "jest": "^29.7.0",
+    "less": "^4.2.0",
+    "less-loader": "^11.1.3",
+    "mini-css-extract-plugin": "^2.7.6",
+    "raw-loader": "^4.0.2",
+    "rollup": "^3.28.0",
+    "rollup-plugin-dts": "^5.3.1",
+    "rollup-plugin-flow-no-whitespace": "^1.0.0",
+    "rollup-plugin-less": "^1.1.3",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-globals": "^1.4.0",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-typescript2": "^0.35.0",
+    "style-loader": "^3.3.3",
+    "ts-jest": "^29.1.1",
+    "ts-loader": "^9.4.4",
+    "typescript": "^5.1.6",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  },
+  "dependencies": {
+    "dompurify": "^3.0.6",
+    "flowchart.js": "^1.17.1",
+    "highlight.js": "^11.9.0",
+    "html-tags": "^3.3.1",
+    "joplin-turndown-plugin-gfm": "^1.0.12",
+    "js-base64": "^3.7.5",
+    "js-md5": "^0.8.3",
+    "katex": "^0.16.9",
+    "mathjax": "^3.2.2",
+    "mermaid": "^10.6.0",
+    "plantuml-encoder": "^1.4.0",
+    "snapsvg-cjs": "^0.0.6",
+    "turndown": "^7.1.2",
+    "underscore": "^1.13.6",
+    "vega-embed": "^6.23.0",
+    "webfontloader": "^1.6.28"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "env": {
+    "node": true,
+    "jest": true
+  }
+}
