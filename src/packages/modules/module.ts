@@ -49,7 +49,6 @@ export default abstract class MEModule<T extends ModuleNodes = {}> implements ME
 
     destroy() {
         this.mutableListeners.clearAll();
-        this.instance = null;
     }
 
 }

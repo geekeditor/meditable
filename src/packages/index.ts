@@ -169,6 +169,13 @@ class MEditable implements MEInstance {
         Object.keys(this.context).reverse().forEach((module)=>{
             this.context[module].destroy()
         })
+        // Release instances delay 300ms
+        setTimeout(()=>{
+            Object.keys(this.context).reverse().forEach((module)=>{
+                this.context[module].instance = null;
+                delete this.context[module];
+            })
+        }, 300)
     }
 }
 
