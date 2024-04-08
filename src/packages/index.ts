@@ -48,10 +48,16 @@ export const DEFAULT_OPTIONS: MEOptions = {
     autoMoveCheckedToEnd: true,
 };
 
-
+const apis = {
+    layout: ["toggleFocusMode"],
+    i18n: ["addLocales", "t", "changeLanguage"],
+    state: ["setContent", "getContent", "getWordCount"],
+    search: ["search", "replace", "searchJumpNext", "searchJumpPrev", "searchJumpIndex", "searchClear"],
+    stack: ["undo", "redo", "canRedo", "canUndo"],
+    clipboard: ["copyAsMarkdown", "copyAsHtml", "copyAsPlainText", "pasteAsPlainText"],
+    event: ["on", "off", "trigger"]
+};
 class MEditable implements MEInstance {
-
-    
 
     static defaultOptions: MEOptions = DEFAULT_OPTIONS;
     static instancesSet: Set<MEInstance> = new Set();
@@ -144,16 +150,6 @@ class MEditable implements MEInstance {
     }
 
     private exportAPI() {
-        const apis = {
-            layout: ["toggleFocusMode"],
-            i18n: ["addLocales", "t", "changeLanguage"],
-            state: ["setContent", "getContent", "getWordCount"],
-            search: ["search", "replace", "searchJumpNext", "searchJumpPrev", "searchJumpIndex", "searchClear"],
-            stack: ["undo", "redo", "canRedo", "canUndo"],
-            clipboard: ["copyAsMarkdown", "copyAsHtml", "copyAsPlainText", "pasteAsPlainText"],
-            event: ["on", "off", "trigger"]
-        };
-
         Object.keys(apis).forEach((key) => {
             for (const api of apis[key]) {
                 this[api] = this.context[key][api].bind(this.context[key]);
@@ -163,6 +159,13 @@ class MEditable implements MEInstance {
 
     destroy() {
         MEditable.instancesSet.delete(this);
+        Object.keys(apis).forEach((key) => {
+            for (const api of apis[key]) {
+                this[api] = ()=>{
+                    throw new Error("[MEditable] MEditable instance is destroyed")
+                };
+            }
+        });
         Object.keys(this.context).reverse().forEach((module)=>{
             this.context[module].destroy()
         })
