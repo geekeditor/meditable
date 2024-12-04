@@ -45,7 +45,7 @@ class MEState extends MEModule {
     const data = this.markdownToState.generate(text);
     this.labels = collectReferenceDefinitions(data.children);
     content.render({ data });
-    content.setCursorAtBegin();
+    content.setCursorAtEnd();
     stack.reset();
     requestAnimationFrame(()=>{
       const currentScene = this.getScene();

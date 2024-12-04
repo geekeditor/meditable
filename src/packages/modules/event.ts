@@ -52,7 +52,7 @@ export default class MEEvent extends MEModule {
             "dragstart",
             "dragover"
         ].forEach((type)=>{
-            this.mutableListeners.on(layout.nodes.editor, type, this.proxyDomEvent);
+            this.mutableListeners.on(layout.nodes.scroller, type, this.proxyDomEvent);
         })
 
         const selectionChangeEvent = (evt: any) => {
