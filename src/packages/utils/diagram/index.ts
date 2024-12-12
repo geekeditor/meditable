@@ -1,4 +1,5 @@
 import sanitize, { PREVIEW_DOMPURIFY_CONFIG } from "../dompurify";
+import { vega } from "vega-embed";
 
 const rendererCache = new Map();
 /**
@@ -93,7 +94,7 @@ const renderDiagram = async ({ type, code, target, theme }: {type: string; code:
       theme
     })
     await render.parse(code)
-    target.innerHTML = sanitize(code, PREVIEW_DOMPURIFY_CONFIG, true)
+    target.innerHTML = sanitize(code, PREVIEW_DOMPURIFY_CONFIG)
     target.removeAttribute('data-processed')
     await render.run({
       nodes: [target]

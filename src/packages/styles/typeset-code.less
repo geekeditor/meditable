@@ -20,6 +20,11 @@ pre.me-block--actived[data-block-type="frontmatter"]::after {
 .me-block--actived[data-block-type="diagram-block"] pre[data-role="sequence"]::before {
     content: '``` sequence';
 }
+
+.me-block--actived[data-block-type="diagram-block"] pre[data-role="plantuml"]::before {
+    content: '``` plantuml';
+}
+
 .me-block--actived[data-block-type="diagram-block"] pre[data-role="vega-lite"]::before {
     content: '``` vega-lite';
 }

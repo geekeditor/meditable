@@ -71,7 +71,7 @@ export const normalizePastedHTML = async function (html) {
     }
 
     // Prevent XSS and sanitize HTML.
-    const sanitizedHtml = sanitize(html, PREVIEW_DOMPURIFY_CONFIG, false);
+    const sanitizedHtml = sanitize(html, PREVIEW_DOMPURIFY_CONFIG);
     const tempWrapper = document.createElement("div");
     tempWrapper.innerHTML = sanitizedHtml;
 

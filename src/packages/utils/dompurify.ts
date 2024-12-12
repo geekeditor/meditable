@@ -1,4 +1,6 @@
-import { sanitize, isValidAttribute } from "dompurify";
+import purify from "dompurify";
+
+const { sanitize, isValidAttribute } = purify;
 
 export { isValidAttribute };
 
