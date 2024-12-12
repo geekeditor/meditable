@@ -162,7 +162,8 @@ class MEditable implements MEInstance {
         Object.keys(apis).forEach((key) => {
             for (const api of apis[key]) {
                 this[api] = ()=>{
-                    throw new Error("[MEditable] MEditable instance is destroyed")
+                    // throw new Error("[MEditable] MEditable instance is destroyed")
+                    console.warn(`[MEditable] MEditable instance is destroyed, can't use ${api} API`)
                 };
             }
         });
