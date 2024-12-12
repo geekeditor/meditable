@@ -73,7 +73,7 @@ const tokenizerFac = (
     const def = beginRules.reference_definition.exec(src);
     if (def && isLengthEven(def[3])) {
       const token = {
-        type: "reference_definition",
+        type: "",
         parent: tokens,
         leftBracket: def[1],
         label: def[2],

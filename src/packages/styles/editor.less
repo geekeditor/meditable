@@ -50,14 +50,15 @@
     &--focus-mode {
         .me-content {
             .me-block:not(.me-block--focused) {
-                & > .me-container,
-                & > .me-preview,
-                & > .me-editable:not(.me-language) { 
+
+                &>.me-container,
+                &>.me-preview,
+                &>.me-editable:not(.me-language) {
                     opacity: 0.3;
                 }
             }
         }
-        
+
     }
 }
 
@@ -178,6 +179,21 @@
         position: relative;
     }
 
+    .me-image {
+        .me-inline-render {
+            position: relative;
+            display: inline-block;
+    
+            &:hover {
+                .me-toolbar {
+                    display: flex;
+                }
+            }
+        }
+    }
+
+    
+
     .me-node--actived {
         .me-inline-render {
             z-index: 100;
@@ -206,6 +222,8 @@
         display: none;
     }
 
+
+
     .me-image-empty {
         .me-image-icon {
             display: inline-block;
@@ -216,6 +234,10 @@
         }
 
         img {
+            display: none;
+        }
+
+        .me-tool--view {
             display: none;
         }
     }
@@ -266,6 +288,10 @@
                 animation-delay: 1.2s;
             }
         }
+
+        .me-toolbar {
+            display: none;
+        }
     }
 
     // Block style
@@ -285,9 +311,68 @@
         }
     }
 
+    .me-toolbar {
+        display: none;
+        width: fit-content;
+        height: fit-content;
+        flex-direction: row;
+        justify-content: flex-end;
+        position: absolute;
+        top: 0em;
+        right: 0em;
+        z-index: 1;
+    }
+
+    .me-tool {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        background-size: 100%;
+        background-repeat: no-repeat;
+        opacity: 0.5;
+        transition: opacity .2s ease-in-out;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    .me-tool + .me-tool {
+        margin-left: 8px;
+    }
+
+    .me-tool--select {
+        background-image: url("@/packages/assets/icons/select/2.png");
+    }
+
+    .me-tool--copy {
+        background-image: url("@/packages/assets/icons/copy/2.png");
+    }
+
+    .me-tool--view {
+        background-image: url("@/packages/assets/icons/view/2.png");
+    }
+
+    .me-tool--download {
+        background-image: url("@/packages/assets/icons/download/2.png");
+    }
+
+    .me-tool--success {
+        background-image: url("@/packages/assets/icons/check/2.png")
+    }
+
     .me-preview {
         width: 100%;
         text-align: center;
+        position: relative;
+
+        &:hover {
+            .me-toolbar {
+                display: flex;
+            }
+        }
     }
 
     .me-code-copy {

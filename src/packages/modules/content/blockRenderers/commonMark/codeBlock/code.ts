@@ -92,10 +92,10 @@ export default class MECodeRenderer extends MEBlockRenderer {
             this.nodes.el = this.make(this.tagName);
             this.nodes.holder = this.make('span', [CLASS_NAMES.ME_EDITABLE, CLASS_NAMES.ME_CODE], { contenteditable: 'true' });
             this.nodes.el.appendChild(this.nodes.holder);
-            const copyNode = this.make('span', [CLASS_NAMES.ME_CODE_COPY], { contenteditable: 'false' });
+            const copyNode = this.make('span', [CLASS_NAMES.ME_CODE_COPY, CLASS_NAMES.ME_TOOL], { contenteditable: 'false' });
             this.nodes.el.appendChild(copyNode);
             this.mutableListeners.on(copyNode, 'click', this.copyHandler.bind(this))
-            this.mutableListeners.on(copyNode, 'mousedown', this.preventMouseDown.bind(this))
+            // this.mutableListeners.on(copyNode, 'mousedown', this.preventMouseDown.bind(this))
         }
 
         const result = highlight(this.lang, this.text);
@@ -281,7 +281,7 @@ export default class MECodeRenderer extends MEBlockRenderer {
         }, 1000)
     }
 
-    preventMouseDown(event) {
-        event.preventDefault()
-    }
+    // preventMouseDown(event) {
+    //     event.preventDefault()
+    // }
 }

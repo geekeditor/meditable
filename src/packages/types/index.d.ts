@@ -382,7 +382,7 @@ export interface MELayoutModuleInstance extends MEModuleInstance {
     readonly nodes: MELayoutNodes;
     readonly scrollerState: {scrollTop: number; scrollTopBlockId?: string}
     toggleFocusMode: (focusMode: boolean) => void;
-
+    viewImage: (container: HTMLElement) => void;
 }
 
 

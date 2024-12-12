@@ -4,6 +4,8 @@ import { CLASS_NAMES } from "@/packages/utils/classNames";
 import { getImageSrc, imageUtils, selectFiles } from "../../utils/image";
 import { isValidAttribute } from "@/packages/utils/dompurify";
 import { getTextContent } from "../../utils/dom";
+import { canCopyBlob, copyBlob, saveToDisk } from "@/packages/utils/utils";
+import { imgURLToBlob } from "@/packages/utils/convert";
 
 export default class MEHtmlImg extends MENode {
     static type: MENodeType = "html_img";
@@ -25,7 +27,7 @@ export default class MEHtmlImg extends MENode {
     }
     renderSelf(data: MENodeData) {
 
-        if(this.data && data.raw === this.data.raw) {
+        if (this.data && data.raw === this.data.raw) {
             return;
         }
 
@@ -58,7 +60,7 @@ export default class MEHtmlImg extends MENode {
             attributes['src'] = src;
         }
 
-        attributes["title"] = this.t("Double-click to select image")
+        // attributes["title"] = this.t("Double-click to select image");
         if (!this.nodes.el) {
             this.nodes.el = this.make("span", [CLASS_NAMES.ME_NODE, CLASS_NAMES.ME_IMAGE]);
             this.nodes.el.innerHTML = `<span class="${CLASS_NAMES.ME_MARKER}" spellcheck="false"></span>`
@@ -77,9 +79,25 @@ export default class MEHtmlImg extends MENode {
             preview.appendChild(loadingIcon);
             this.img = this.make('img', [], attributes) as HTMLImageElement;
             preview.appendChild(this.img);
-            this.mutableListeners.on(preview, 'dblclick', () => {
-                this.pickChangeImage()
-            })
+            const toolbar = this.make('span', [CLASS_NAMES.ME_TOOLBAR]);
+            preview.appendChild(toolbar);
+            const selectIcon = this.make('span', [CLASS_NAMES.ME_TOOL, CLASS_NAMES.ME_TOOL__SELECT]);
+
+            const viewIcon = this.make('span', [CLASS_NAMES.ME_TOOL, CLASS_NAMES.ME_TOOL__VIEW]);
+            toolbar.appendChild(selectIcon);
+            toolbar.appendChild(viewIcon);
+            this.mutableListeners.on(selectIcon, 'click', this.pickImage.bind(this))
+            this.mutableListeners.on(viewIcon, 'click', this.viewImage.bind(this))
+
+            if (canCopyBlob()) {
+                const copyIcon = this.make('span', [CLASS_NAMES.ME_TOOL, CLASS_NAMES.ME_TOOL__COPY]);
+                toolbar.appendChild(copyIcon);
+                this.mutableListeners.on(copyIcon, 'click', this.copyImage.bind(this))
+            }
+
+            const downloadIcon = this.make('span', [CLASS_NAMES.ME_TOOL, CLASS_NAMES.ME_TOOL__DOWNLOAD]);
+            toolbar.appendChild(downloadIcon);
+            this.mutableListeners.on(downloadIcon, 'click', this.downloadImage.bind(this))
         } else {
             const el = this.nodes.el.lastElementChild as HTMLElement;
             for (const key in dataset) {
@@ -159,11 +177,36 @@ export default class MEHtmlImg extends MENode {
 
     }
 
-    pickChangeImage() {
+    pickImage(event) {
         selectFiles({ accept: 'image/*' }).then((files) => {
             const url = imageUtils.createObjectURL(files[0])
             this.updateSrc(url, files[0].name)
         });
+    }
+
+    copyImage(event) {
+        imgURLToBlob(this.img.src).then((blob) => {
+            if (blob) {
+                copyBlob(blob).then(() => {
+                    event.target.classList.toggle(CLASS_NAMES.ME_TOOL__SUCCESS, true)
+                    setTimeout(() => {
+                        event.target.classList.toggle(CLASS_NAMES.ME_TOOL__SUCCESS, false)
+                    }, 1000)
+                })
+            }
+        })
+    }
+
+    viewImage(event) {
+        this.instance.context.layout.viewImage(this.nodes.el)
+    }
+
+    downloadImage() {
+        imgURLToBlob(this.img.src).then((blob) => {
+            if (blob) {
+                saveToDisk(this.data.attrs.alt || "image-" + Date.now() + ".png", blob)
+            }
+        })
     }
 
     updateSrc(url: string, alt?: string) {

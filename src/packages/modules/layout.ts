@@ -3,7 +3,8 @@ import $ from '@/packages/utils/domUtils';
 import MEModule from './module'
 import { CLASS_NAMES } from '@/packages/utils/classNames';
 import { MELayoutNodes } from '../types';
-
+import Viewer from "viewerjs";
+import "viewerjs/dist/viewer.css";
 
 export default class MELayout extends MEModule {
 
@@ -50,6 +51,36 @@ export default class MELayout extends MEModule {
     public toggleFocusMode(focusMode: boolean) {
         this.instance.setOption("focusMode", focusMode);
         this.nodes.editor.classList.toggle(`${CLASS_NAMES.MEUI_EDITOR__FOCUS_MODE}`, focusMode);
+    }
+
+    viewImage(container: HTMLElement) {
+        const photoViewer = new Viewer(container, {
+            inline: false,
+            fullscreen: true,
+            title: true,
+            zIndex: 10000,
+            container: this.nodes.wrapper,
+            toolbar: {
+                zoomIn: 1,
+                zoomOut: 1,
+                oneToOne: 1,
+                reset: 1,
+                prev: 0,
+                play: 0,
+                next: 0,
+                rotateLeft: 1,
+                rotateRight: 1,
+                flipHorizontal: 1,
+                flipVertical: 1,
+            },
+            hidden() {
+                photoViewer.destroy();
+            },
+            show() {
+                photoViewer.full();
+            },
+        });
+        photoViewer.show();
     }
 
     public destroy(): void {

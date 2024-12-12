@@ -454,6 +454,9 @@ export default class MEBlockRenderer extends MEEventHandler {
     clickHandler(event) {
         // Handler click inline math and inline ruby html.
         const { target } = event
+        if (target.closest(`.${CLASS_NAMES.ME_TOOL}, .${CLASS_NAMES.ME_TOOLBAR}`)) {
+            return
+        }
         const inlineRuleRenderEle = target.closest(`.${CLASS_NAMES.ME_INLINE_RENDER}`) ||
             (target.classList.contains(CLASS_NAMES.ME_NODE) && target.querySelector(`.${CLASS_NAMES.ME_INLINE_RENDER}`))
 

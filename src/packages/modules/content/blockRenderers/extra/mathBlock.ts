@@ -3,6 +3,9 @@ import katex from 'katex';
 import MEHtmlBlockRenderer from "../commonMark/htmlBlock";
 import { md5 } from "js-md5";
 import { tex2svgPromise } from "@/packages/utils/math";
+import { svgToBlob } from "@/packages/utils/convert";
+import { copyBlob, saveToDisk } from "@/packages/utils/utils";
+import { CLASS_NAMES } from "@/packages/utils/classNames";
 export default class MEMathBlockRenderer extends MEHtmlBlockRenderer {
     static type: MEBlockType = "math-block";
     static mathMap: Map<string, string> = new Map();
@@ -12,7 +15,7 @@ export default class MEMathBlockRenderer extends MEHtmlBlockRenderer {
         const key = md5(math);
         let mathHtml = "";
         if(this.mathMap2.has(key)) {
-            mathHtml = this.mathMap.get(key);
+            mathHtml = this.mathMap2.get(key);
         } else {
             try {
                 mathHtml = await tex2svgPromise(math);
@@ -24,8 +27,8 @@ export default class MEMathBlockRenderer extends MEHtmlBlockRenderer {
         return `<${this.tagName} class="${this.type}">${mathHtml||''}</${this.tagName}>`
     }
 
-    get preview() {
-        return this.nodes.el.firstElementChild;
+    get canExportImage() {
+        return true;
     }
 
     updateContent() {
@@ -50,5 +53,45 @@ export default class MEMathBlockRenderer extends MEHtmlBlockRenderer {
 
         this.updatePreview(mathHtml)
         return true;
+    }
+
+    async getSVG() {
+        const math = this.text;
+        let svg = "";
+        try {
+            svg = await tex2svgPromise(math);
+        } catch (error) {
+            
+        }
+
+        return svg;
+    }
+
+    async copyImage(event) {
+        const svg = await this.getSVG();
+        if (svg) {
+            svgToBlob(svg).then((blob) => {
+                if (blob) {
+                    copyBlob(blob).then(() => {
+                        event.target.classList.toggle(CLASS_NAMES.ME_TOOL__SUCCESS, true)
+                        setTimeout(() => {
+                            event.target.classList.toggle(CLASS_NAMES.ME_TOOL__SUCCESS, false)
+                        }, 1000)
+                    });
+;
+                }
+            });
+        }
+    }
+
+    async downloadImage() {
+        const svg = await this.getSVG();
+        if (svg) {
+            svgToBlob(svg).then((blob) => {
+                if (blob) {
+                    saveToDisk("math-" + Date.now() + ".png", blob);
+                }
+             });
+        }
     }
 }

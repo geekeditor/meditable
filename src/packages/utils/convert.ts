@@ -29,7 +29,29 @@ export function dataURItoBlob(dataURI: string) {
     return new Blob([ab], { type: mimeString })
 }
 
-export function svgToBlob(svg: string): Promise<Blob | null> {
+export function imgURLToBlob(url: string): Promise<Blob | null> {
+    return new Promise((resolve) => {
+        const img = new Image();
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        img.src = url;
+        img.onload = () => {
+            canvas.width = img.naturalWidth || img.width;
+            canvas.height = img.naturalHeight || img.height;
+            ctx?.drawImage(img, 0, 0);
+
+            canvas.toBlob((blob) => {
+                resolve(blob)
+            }, 'image/png')
+        }
+        img.onerror = () => {
+            resolve(null)
+        }
+    })
+}
+
+export function svgToBlob(svg: string, scale?: number, fillColor?: string): Promise<Blob | null> {
     return new Promise((resolve) => {
         const img = new Image();
         const canvas = document.createElement('canvas');
@@ -37,9 +59,16 @@ export function svgToBlob(svg: string): Promise<Blob | null> {
 
         img.src = `data:image/svg+xml;base64,${Base64.encode(svg)}`;
         img.onload = () => {
-            canvas.width = img.width;
-            canvas.height = img.height;
-            ctx?.drawImage(img, 0, 0);
+            canvas.width = (img.naturalWidth || img.width) * (scale || 2);
+            canvas.height = (img.naturalHeight || img.height) * (scale || 2);
+
+            if(ctx) {
+                ctx.fillStyle = fillColor || 'white';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
+            
+            ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
 
             canvas.toBlob((blob) => {
                 resolve(blob)

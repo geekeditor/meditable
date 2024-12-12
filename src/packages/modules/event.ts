@@ -1,5 +1,6 @@
+import { CLASS_NAMES } from "../utils/classNames";
 import MEModule from "./module";
-import {debounce} from "@/packages/utils/utils"
+import { debounce } from "@/packages/utils/utils"
 
 export interface EventEmitterInstance {
     on: (types: string | string[], handler: Function) => void;
@@ -29,7 +30,7 @@ export default class MEEvent extends MEModule {
             "input",
             "compositionstart",
             "compositionend"
-        ].forEach((type)=>{
+        ].forEach((type) => {
             this.mutableListeners.on(editable.holder, type, this.proxyDomEvent);
         });
 
@@ -37,7 +38,7 @@ export default class MEEvent extends MEModule {
             "copy",
             "cut",
             "paste"
-        ].forEach((type)=>{
+        ].forEach((type) => {
             this.mutableListeners.on(editable.holder, type, this.proxyDomEvent);
         });
 
@@ -51,7 +52,7 @@ export default class MEEvent extends MEModule {
             "drop",
             "dragstart",
             "dragover"
-        ].forEach((type)=>{
+        ].forEach((type) => {
             this.mutableListeners.on(layout.nodes.scroller, type, this.proxyDomEvent);
         })
 
@@ -62,12 +63,21 @@ export default class MEEvent extends MEModule {
             this.selectionChange(evt);
         }
 
-        ["mouseup", "keydown"].forEach((type)=>{
+        ["mouseup", "keydown"].forEach((type) => {
             this.mutableListeners.on(editable.holder, type, selectionChangeEvent);
         })
         // Maybe move mouse out of holder
         this.mutableListeners.on(editable.document, 'mouseup', selectionChangeEvent);
         this.mutableListeners.on(editable.document, 'selectionchange', selectionChangeEvent);
+
+        const preventSelection = (event) => {
+            const { target } = event
+            if (target.closest(`.${CLASS_NAMES.ME_TOOL}, .${CLASS_NAMES.ME_TOOLBAR}, .${CLASS_NAMES.ME_PREVIEW}`)) {
+                event.preventDefault()
+                return
+            }
+        }
+        this.mutableListeners.on(editable.document, 'mousedown', preventSelection)
     }
 
     private proxyDomEvent(evt: Event) {
@@ -76,11 +86,11 @@ export default class MEEvent extends MEModule {
     }
 
     selectionChange(evt?: Event) {
-        if(!this.instance) {
+        if (!this.instance) {
             return;
         }
         const causeByUi = !!evt;
-        const {selection} = this.instance.context.editable;
+        const { selection } = this.instance.context.editable;
         selection.cache();
         if (selection.cachedRange && selection.cachedCursor) {
             this.trigger("beforeselectionchange");

@@ -9,41 +9,49 @@ export const genUpper2LowerKeyHash = (keys) => {
 
 export const CLASS_NAMES = genUpper2LowerKeyHash([
     // Editor
-    'MEUI_FRAME',
-    'MEUI_WRAPPER',
-    'MEUI_SCROLLER',
-    'MEUI_EDITOR',
-    'MEUI_PRESENTATION',
-    'MEUI_SCROLLER_DECORATION',
-    'MEUI_EDITOR__WEB',
-    'MEUI_EDITOR__PRINT',
-    'MEUI_EDITOR__MOBILE',
-    'MEUI_EDITOR__EMPTY',
-    'MEUI_EDITOR__FOCUS_MODE',
+    "MEUI_FRAME",
+    "MEUI_WRAPPER",
+    "MEUI_SCROLLER",
+    "MEUI_EDITOR",
+    "MEUI_PRESENTATION",
+    "MEUI_SCROLLER_DECORATION",
+    "MEUI_EDITOR__WEB",
+    "MEUI_EDITOR__PRINT",
+    "MEUI_EDITOR__MOBILE",
+    "MEUI_EDITOR__EMPTY",
+    "MEUI_EDITOR__FOCUS_MODE",
     "MEUI_EDITOR__ACTIVE",
-    'MEUI_EDITOR_ZONE',
-    'MEUI_EDITOR_CONTENT',
+    "MEUI_EDITOR_ZONE",
+    "MEUI_EDITOR_CONTENT",
 
     // Block
-    'ME_CONTENT',
-    'ME_CONTENT__SEARCHING',
-    'ME_CONTENT__CONTROLLING',
-    'ME_BLOCK',
-    'ME_BLOCK__FOCUSED',
-    'ME_BLOCK__ACTIVED',
-    'ME_BLOCK__SELECTED',
-    'ME_BLOCK__DROP_TARGET',
-    'ME_EDITABLE',
-    'ME_LANGUAGE',
-    'ME_CODE',
-    'ME_CODE_COPY',
-    'ME_CODE_COPY__SUCCESS',
-    'ME_PREVIEW',
-    'ME_CONTAINER',
-    'ME_TASK_LIST',
-    'ME_TASK_LIST_ITEM_CHECKBOX',
-    'ME_TASK_LIST_ITEM_CHECKBOX__CHECKED',
-    'ME_TASK_LIST_ITEM_CONTENT',
+    "ME_CONTENT",
+    "ME_CONTENT__SEARCHING",
+    "ME_CONTENT__CONTROLLING",
+    "ME_BLOCK",
+    "ME_BLOCK__FOCUSED",
+    "ME_BLOCK__ACTIVED",
+    "ME_BLOCK__SELECTED",
+    "ME_BLOCK__DROP_TARGET",
+    "ME_EDITABLE",
+    "ME_LANGUAGE",
+    "ME_CODE",
+    "ME_CODE_COPY",
+    "ME_CODE_COPY__SUCCESS",
+    "ME_PREVIEW",
+    "ME_PREVIEW_CONTENT",
+    "ME_TOOLBAR",
+    "ME_TOOL",
+    "ME_TOOL__SELECT",
+    "ME_TOOL__COPY",
+    "ME_TOOL__SUCCESS",
+    "ME_TOOL__VIEW",
+    "ME_TOOL__DOWNLOAD",
+    "ME_CONTAINER",
+    "ME_TASK_LIST",
+    "ME_TASK_LIST_ITEM_CHECKBOX",
+    "ME_TASK_LIST_ITEM_CHECKBOX__CHECKED",
+    "ME_TASK_LIST_ITEM_CONTENT",
 
     // Node
     "ME_NODE",
@@ -73,8 +81,11 @@ export const CLASS_NAMES = genUpper2LowerKeyHash([
     "ME_IMAGE_EMPTY",
     "ME_IMAGE_LOADING",
     "ME_IMAGE_ERROR",
-
+    "ME_IMAGE_TOOLBAR",
     
+
+
+
     "ME_AUTO_LINK",
     "ME_AUTO_LINK_EXTENSION",
     "ME_BACKLASH",
@@ -98,12 +109,12 @@ export const CLASS_NAMES = genUpper2LowerKeyHash([
     "ME_GRAY",
     "ME_HARD_LINE_BREAK",
     "ME_HARD_LINE_BREAK_SPACE",
-    
+
     "ME_HEADER_TIGHT_SPACE",
     "ME_HIDE",
     "ME_HIGHLIGHT",
     "ME_HTML_BLOCK",
-    
+
     "ME_HTML_PREVIEW",
     "ME_HTML_TAG",
     "ME_IMAGE_FAIL",
@@ -127,9 +138,9 @@ export const CLASS_NAMES = genUpper2LowerKeyHash([
     "ME_LINK_IN_BRACKET",
     "ME_LIST_ITEM",
     "ME_LOOSE_LIST_ITEM",
-    
+
     "ME_SELECTED",
-    
+
     "ME_MERMAID",
     "ME_MULTIPLE_MATH",
     "ME_NOTEXT_LINK",
