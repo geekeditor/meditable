@@ -69,7 +69,7 @@ export default class MEHtmlImg extends MENode {
             const preview = this.make('span', [CLASS_NAMES.ME_INLINE_RENDER], {
                 contenteditable: "false",
                 spellcheck: "false",
-                title: this.t("Double-click to select image")
+                // title: this.t("Double-click to select image")
             }, dataset);
             this.nodes.el.appendChild(preview);
             const icon = this.make('span', [CLASS_NAMES.ME_IMAGE_ICON]);
