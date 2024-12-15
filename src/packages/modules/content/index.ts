@@ -3,6 +3,7 @@ import MEBlock from "./block";
 import { clearDropBlock, findActivedNodes, findDropBlock } from "./utils/find";
 import commands from "./commands";
 import { CLASS_NAMES } from "@/packages/utils/classNames";
+import env from "@/packages/utils/env";
 
 
 
@@ -143,7 +144,11 @@ class MEContent extends MEBlock {
         const { selection } = editable;
         const eventHandler = (type, event) => {
 
+            const { anchorBlock, isSameBlock, isCollapsed } = selection.cursor
             if(type === 'click') {
+                if(!isCollapsed) {
+                    return;
+                }
                 const { target } = event
                 const blockEl = target.closest(`.${CLASS_NAMES.ME_BLOCK}`)
                 if(blockEl) {
@@ -155,7 +160,7 @@ class MEContent extends MEBlock {
                 return
             }
 
-            const { anchorBlock, isSameBlock } = selection.cursor
+            
             if (!isSameBlock || !anchorBlock) {
                 if(!anchorBlock) {
                     event.preventDefault();
@@ -180,8 +185,19 @@ class MEContent extends MEBlock {
                     anchorBlock.renderer.keyupHandler(event)
                     break
                 }
-                case 'compositionend':
+                case 'compositionend': {
+                    if(env.safari) {
+                        this.instance.context.layout.nodes.content.contentEditable = 'true';
+                    }
+                    
+                    anchorBlock.renderer.composeHandler(event)
+                    break
+                }
                 case 'compositionstart': {
+                    if(env.safari) {
+                        this.instance.context.layout.nodes.content.contentEditable = 'false';
+                    }
+                    
                     anchorBlock.renderer.composeHandler(event)
                     break
                 }

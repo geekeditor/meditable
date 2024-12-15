@@ -1,4 +1,5 @@
 import { CLASS_NAMES } from "../utils/classNames";
+import env from "../utils/env";
 import MEModule from "./module";
 import { debounce } from "@/packages/utils/utils"
 
@@ -24,17 +25,17 @@ export default class MEEvent extends MEModule {
             "keydown",
             "keyup",
             "keypress",
-            "selectstart",
-            "focus",
-            "blur",
             "input",
             "compositionstart",
             "compositionend"
         ].forEach((type) => {
-            this.mutableListeners.on(editable.holder, type, this.proxyDomEvent);
+            this.mutableListeners.on( env.safari ? editable.document : editable.holder, type, this.proxyDomEvent);
         });
 
         [
+            "selectstart",
+            "focus",
+            "blur",
             "copy",
             "cut",
             "paste"
