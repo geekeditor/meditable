@@ -1,6 +1,7 @@
 import MEModule from "@/packages/modules/module";
 import MESelection from "./selection";
 import { CLASS_NAMES } from "@/packages/utils/classNames";
+import env from "@/packages/utils/env";
 
 
 export default class MEEditable extends MEModule {
@@ -57,7 +58,10 @@ export default class MEEditable extends MEModule {
 
         const { spellcheckEnabled = false } = this.instance.options
         this._holder = el;
-        this._holder.setAttribute("contenteditable", "true");
+        if(!(env.safari && env.isMobile)) {
+            this._holder.setAttribute("contenteditable", "true");
+        }
+        
         this._holder.setAttribute("spellcheck", spellcheckEnabled ? "true" : "false");
         this._holder.style.cursor = "text";
         this._holder.dataset.root = 'root'

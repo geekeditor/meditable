@@ -5,11 +5,9 @@ const env = (function () {
     const agent = navigator.userAgent.toLowerCase(),
         opera = win.opera,
         env: any = {
-            isOsx: window && window.navigator && /Mac/.test(window.navigator.platform),
-            isWin:
-                window &&
-                window.navigator.userAgent &&
-                /win32|wow32|win64|wow64/i.test(window.navigator.userAgent),
+            isOsx: /Mac/.test(navigator.platform),
+            isWin: /win32|wow32|win64|wow64/i.test(agent),
+            isMobile: /(iPhone|iPad|iPod|Android|BlackBerry|BB10|Silk|Mobi|Mini|Fennec|IEMobile|Opera Mini|Windows Phone|Kindle|Mobile|Opera Mobi|Tablet)/i.test(agent),
             ie: /(msie\s|trident.*rv:)([\w.]+)/i.test(agent),
             opera: !!opera && !!opera.version,
             webkit: agent.indexOf(" applewebkit/") > -1,

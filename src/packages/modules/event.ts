@@ -29,7 +29,7 @@ export default class MEEvent extends MEModule {
             "compositionstart",
             "compositionend"
         ].forEach((type) => {
-            this.mutableListeners.on( env.safari ? editable.document : editable.holder, type, this.proxyDomEvent);
+            this.mutableListeners.on( (env.safari && !env.isMobile) ? editable.document : editable.holder, type, this.proxyDomEvent);
         });
 
         [

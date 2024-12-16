@@ -186,18 +186,16 @@ class MEContent extends MEBlock {
                     break
                 }
                 case 'compositionend': {
-                    if(env.safari) {
+                    if(env.safari && !env.isMobile) {
                         this.instance.context.layout.nodes.content.contentEditable = 'true';
                     }
-                    
                     anchorBlock.renderer.composeHandler(event)
                     break
                 }
                 case 'compositionstart': {
-                    if(env.safari) {
+                    if(env.safari && !env.isMobile) {
                         this.instance.context.layout.nodes.content.contentEditable = 'false';
                     }
-                    
                     anchorBlock.renderer.composeHandler(event)
                     break
                 }
