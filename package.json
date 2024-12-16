@@ -1,6 +1,6 @@
 {
   "name": "@geekeditor/meditable",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A WYSIWYG markdown editor for web browser applications",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
