@@ -64,6 +64,8 @@ class MEContent extends MEBlock {
                 })
             }
 
+            console.log(needBlurBlocks, needActiveBlocks);
+
             if(blurBlock) {
                 blurBlock.focused = false;
             }
@@ -185,17 +187,8 @@ class MEContent extends MEBlock {
                     anchorBlock.renderer.keyupHandler(event)
                     break
                 }
-                case 'compositionend': {
-                    if(env.safari && !env.isMobile) {
-                        this.instance.context.layout.nodes.content.contentEditable = 'true';
-                    }
-                    anchorBlock.renderer.composeHandler(event)
-                    break
-                }
+                case 'compositionend':
                 case 'compositionstart': {
-                    if(env.safari && !env.isMobile) {
-                        this.instance.context.layout.nodes.content.contentEditable = 'false';
-                    }
                     anchorBlock.renderer.composeHandler(event)
                     break
                 }

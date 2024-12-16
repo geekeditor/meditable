@@ -118,6 +118,10 @@
         white-space: pre-wrap;
         word-break: break-word;
         outline: none;
+
+        &.me-code {
+            width: 100%;
+        }
     }
 
     .me-editable:empty::after {
@@ -395,9 +399,15 @@
         }
     }
 
-    .me-block--actived:not(.me-language) {
-        position: relative;
+    .me-block {
+        display: block;
+    }
 
+    .me-block--actived[data-block-type="code-block"],
+    .me-block--actived[data-block-type="math-block"],
+    .me-block--actived[data-block-type="html-block"],
+    .me-block--actived[data-block-type="diagram-block"] {
+        position: relative;
         .me-preview {
             position: absolute;
             top: calc(100% + 0px);

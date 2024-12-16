@@ -58,9 +58,7 @@ export default class MEEditable extends MEModule {
 
         const { spellcheckEnabled = false } = this.instance.options
         this._holder = el;
-        if(!(env.safari && env.isMobile)) {
-            this._holder.setAttribute("contenteditable", "true");
-        }
+        this._holder.setAttribute("contenteditable", "true");
         
         this._holder.setAttribute("spellcheck", spellcheckEnabled ? "true" : "false");
         this._holder.style.cursor = "text";

@@ -1,3 +1,4 @@
+import env from "./env";
 
 
 let gFactor = Date.now()
@@ -117,7 +118,7 @@ export const copyContent = (content: Blob | string | { [type: string]: string },
 }
 
 export function canCopyBlob() {
-    return typeof ClipboardItem !== 'undefined'
+    return typeof ClipboardItem !== 'undefined' && !env.safari;
 }
 
 export async function copyBlob(blob: Blob) {
