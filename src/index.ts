@@ -54,3 +54,9 @@ allBtn.addEventListener('click', () => {
 clearBtn.addEventListener('click', () => {
     meditable.searchClear()
 })
+
+if(/(iPhone|iPad|iPod|Android)/i.test(navigator.userAgent)) {
+    const VConsole = require('vconsole')
+    const vConsole = new VConsole()
+    vConsole.init && vConsole.init()
+}
