@@ -392,6 +392,7 @@ export interface MEContentModuleInstance extends MEBlockInstance {
     clearDropTargetBlock: ()=>void;
     setCursorAtBegin: ()=>void;
     setCursorAtEnd: ()=>void;
+    setDefaultCursor: ()=>void;
 }
 
 export interface MEClipboardModuleInstance extends MEModuleInstance {

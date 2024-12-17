@@ -1,9 +1,10 @@
-import { MEBlockInstance, MEInstance } from "@/packages/types";
+import { MEBlockData, MEBlockInstance, MEInstance } from "@/packages/types";
 import MEBlock from "./block";
 import { clearDropBlock, findActivedNodes, findDropBlock } from "./utils/find";
 import commands from "./commands";
 import { CLASS_NAMES } from "@/packages/utils/classNames";
 import env from "@/packages/utils/env";
+import { generateId } from "@/packages/utils/utils";
 
 
 
@@ -32,11 +33,11 @@ class MEContent extends MEBlock {
         if (focusBlock !== blurBlock) {
             this._cacheFocusedBlock = focusBlock
 
-            let needBlurBlocks:MEBlockInstance[] = []
-            let needActiveBlocks:MEBlockInstance[] = []
+            let needBlurBlocks: MEBlockInstance[] = []
+            let needActiveBlocks: MEBlockInstance[] = []
 
             if (blurBlock && focusBlock) {
-                
+
                 needActiveBlocks = focusBlock.getAncestors()
                 needActiveBlocks.push(focusBlock);
                 let block = blurBlock
@@ -66,10 +67,10 @@ class MEContent extends MEBlock {
 
             console.log(needBlurBlocks, needActiveBlocks);
 
-            if(blurBlock) {
+            if (blurBlock) {
                 blurBlock.focused = false;
             }
-            if(focusBlock) {
+            if (focusBlock) {
                 focusBlock.focused = true;
             }
         }
@@ -114,7 +115,7 @@ class MEContent extends MEBlock {
     public dropPointer() {
         this.focusedBlock = null;
     }
-    
+
 
 
     public updateFocusedBlock() {
@@ -129,17 +130,37 @@ class MEContent extends MEBlock {
 
     public setCursorAtBegin() {
         const firstContentBlock = this.firstContentInDescendant();
-        if(firstContentBlock) {
+        if (firstContentBlock) {
             firstContentBlock.renderer.setCursor();
         }
     }
 
     public setCursorAtEnd() {
         const lastContentBlock = this.lastContentInDescendant();
-        if(lastContentBlock) {
-            lastContentBlock.renderer.setCursor({focus: {offset: lastContentBlock.renderer.text.length}});
+        if (lastContentBlock) {
+            lastContentBlock.renderer.setCursor({ focus: { offset: lastContentBlock.renderer.text.length } });
         }
     }
+
+    public setDefaultCursor() {
+        const lastContentBlock = this.lastContentInDescendant()
+        if (lastContentBlock.type === 'paragraph') {
+            lastContentBlock.renderer.setCursor({ focus: { offset: lastContentBlock.renderer.text.length } });
+        } else {
+            const data: MEBlockData = {
+                id: generateId(),
+                type: 'paragraph',
+                text: ''
+            }
+
+            this.append({
+                data,
+                needToFocus: true,
+                focus: { offset: 0 }
+            })
+        }
+    }
+
 
     private dispatchEvents() {
         const { event, editable } = this.instance.context;
@@ -147,13 +168,13 @@ class MEContent extends MEBlock {
         const eventHandler = (type, event) => {
 
             const { anchorBlock, isSameBlock, isCollapsed } = selection.cursor
-            if(type === 'click') {
-                if(!isCollapsed) {
+            if (type === 'click') {
+                if (!isCollapsed) {
                     return;
                 }
                 const { target } = event
                 const blockEl = target.closest(`.${CLASS_NAMES.ME_BLOCK}`)
-                if(blockEl) {
+                if (blockEl) {
                     const blockInstance = blockEl['BLOCK_INSTANCE'];
                     blockInstance.renderer.clickHandler(event);
                 } else {
@@ -162,9 +183,9 @@ class MEContent extends MEBlock {
                 return
             }
 
-            
+
             if (!isSameBlock || !anchorBlock) {
-                if(!anchorBlock) {
+                if (!anchorBlock) {
                     event.preventDefault();
                 }
                 return
@@ -200,7 +221,7 @@ class MEContent extends MEBlock {
         event.on("mousedown", (type, event) => {
 
             const anchorBlock = this.findBlock(event.target);
-            if(anchorBlock) {
+            if (anchorBlock) {
                 anchorBlock.renderer.mouseDownHandler(event);
             }
 
