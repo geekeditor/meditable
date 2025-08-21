@@ -30,7 +30,7 @@ export const getImageSrc = (src) => {
     /^http(s)?:\/\/([a-z0-9\-._~]+\.[a-z]{2,}|[0-9.]+|localhost|\[[a-f0-9.:]+\])(:[0-9]{1,5})?\/[\S]+/i;
   const DATA_URL_REG =
     /^data:image\/[\w+-]+(;[\w-]+=[\w-]+|;base64)*,[a-zA-Z0-9+/]+={0,2}$/;
-  const BLOB_URL_REG = /^blob:http/;
+  const BLOB_URL_REG = /^blob:/;
   const imageExtension = EXT_REG.test(src);
   const isUrl = URL_REG.test(src);
   if (imageExtension) {

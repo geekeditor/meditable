@@ -1,5 +1,5 @@
 
-import { MEBlockData, MEDiagramHtmlType, MENodeData } from "@/packages/types";
+import { MEBlockData, MEBlockRendererStaticRenderOptions, MEDiagramHtmlType, MENodeData, MENodeRendererStaticRenderOptions } from "@/packages/types";
 import { tokenizer } from "../content/inlineRenderers/tokenizer";
 import { collectReferenceDefinitions } from "./utils";
 import { blockStaticRender } from "../content/blockRenderers";
@@ -7,11 +7,15 @@ import { nodeStaticRender } from "../content/inlineRenderers";
 
 export default class StateToHtml {
     private diagramHtmlType: MEDiagramHtmlType | { mermaid?: MEDiagramHtmlType; flowchart?: MEDiagramHtmlType; sequence?: MEDiagramHtmlType; "vega-lite"?: MEDiagramHtmlType; plantuml?: MEDiagramHtmlType } = 'svg';
+    private staticNodeHtmlRenderer?: (options: MENodeRendererStaticRenderOptions, renderedHtml: string)=>Promise<string>;
+    private staticBlockHtmlRenderer?: (options: MEBlockRendererStaticRenderOptions, renderedHtml: string)=>Promise<string>;
     private labels: Map<string, { href: string; title: string }>;
 
-    constructor(options?: { diagramHtmlType?: MEDiagramHtmlType | { mermaid?: MEDiagramHtmlType; flowchart?: MEDiagramHtmlType; sequence?: MEDiagramHtmlType; "vega-lite"?: MEDiagramHtmlType; plantuml?: MEDiagramHtmlType } }) {
+    constructor(options?: { staticNodeHtmlRenderer?: (options: MENodeRendererStaticRenderOptions, renderedHtml: string)=>Promise<string>, staticBlockHtmlRenderer?: (options: MEBlockRendererStaticRenderOptions, renderedHtml: string)=>Promise<string>, diagramHtmlType?: MEDiagramHtmlType | { mermaid?: MEDiagramHtmlType; flowchart?: MEDiagramHtmlType; sequence?: MEDiagramHtmlType; "vega-lite"?: MEDiagramHtmlType; plantuml?: MEDiagramHtmlType } }) {
         if (options) {
             this.diagramHtmlType = options.diagramHtmlType || 'svg'
+            this.staticNodeHtmlRenderer = options.staticNodeHtmlRenderer
+            this.staticBlockHtmlRenderer = options.staticBlockHtmlRenderer
         }
     }
 
@@ -35,7 +39,10 @@ export default class StateToHtml {
                 }
             }
 
-            const html = await blockStaticRender(state.type, { innerHTML, diagramHtmlType, data: state })
+            let html = await blockStaticRender(state.type, { innerHTML, diagramHtmlType, data: state })
+            if(this.staticBlockHtmlRenderer) {
+                html = await this.staticBlockHtmlRenderer({ innerHTML, diagramHtmlType, data: state }, html)
+            }
             result.push(html)
         }
 
@@ -57,7 +64,10 @@ export default class StateToHtml {
         const result: string[] = [];
         for (const token of tokens) {
             const innerHTML = (token.children && token.children.length) ? await this.tokensToHtml(token.children) : token.content || "";
-            const html = await nodeStaticRender(token.type, { innerHTML, data: token, labels })
+            let html = await nodeStaticRender(token.type, { innerHTML, data: token, labels })
+            if(this.staticNodeHtmlRenderer) {
+                html = await this.staticNodeHtmlRenderer({ innerHTML, data: token, labels }, html)
+            }
             result.push(html)
         }
 

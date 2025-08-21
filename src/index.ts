@@ -17,7 +17,7 @@ MEditable.use(MEPluginContextMenu)
 const markdown = README.default
 const meditable = new MEditable({ container: editor, locale: {lang: navigator.language} })
 meditable.prepare().then(() => {
-    meditable.setContent(markdown)
+    meditable.setContent("")
 });
 (window as any).meditable = meditable;
 (window as any).MEditable = MEditable;

@@ -125,7 +125,7 @@ class MEClipboard extends MEModule {
         let html = "";
 
         const mdGenerator = new StateToMarkdown();
-        const htmlGenerator = new StateToHtml({ diagramHtmlType: this.instance.options.diagramHtmlType });
+        const htmlGenerator = new StateToHtml({ diagramHtmlType: this.instance.options.diagramHtmlType, staticNodeHtmlRenderer: this.instance.options.staticNodeHtmlRenderer, staticBlockHtmlRenderer: this.instance.options.staticBlockHtmlRenderer });
         const copyState = this.getSelectionState();
         if (!copyState) {
             return { html, text };
@@ -411,7 +411,7 @@ class MEClipboard extends MEModule {
     public copyAsHtml() {
         const copyState = this.getSelectionState();
         if (copyState) {
-            const htmlGenerator = new StateToHtml({ diagramHtmlType: this.instance.options.diagramHtmlType });
+            const htmlGenerator = new StateToHtml({ diagramHtmlType: this.instance.options.diagramHtmlType, staticNodeHtmlRenderer: this.instance.options.staticNodeHtmlRenderer, staticBlockHtmlRenderer: this.instance.options.staticBlockHtmlRenderer });
             htmlGenerator.generate(copyState.state).then((html) => {
                 this.copy("copyHtml", "", html);
             });

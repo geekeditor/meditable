@@ -27,7 +27,7 @@ class MEState extends MEModule {
     this.markdownToState = new MarkdownToState();
     this.stateToMarkdown = new StateToMarkdown();
     this.htmlToMarkdown = new HtmlToMarkdown();
-    this.stateToHtml = new StateToHtml({diagramHtmlType: instance.options.diagramHtmlType});
+    this.stateToHtml = new StateToHtml({diagramHtmlType: instance.options.diagramHtmlType, staticNodeHtmlRenderer: instance.options.staticNodeHtmlRenderer, staticBlockHtmlRenderer: instance.options.staticBlockHtmlRenderer });
     this.stateToPlainText = new StateToPlainText();
   }
 

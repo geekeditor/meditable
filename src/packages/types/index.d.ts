@@ -75,8 +75,11 @@ export type MEOptions = {
     pasteTransform?: (content: {text: string; html: string})=>{text:string;html:string};
 
     // svg or img
-    diagramHtmlType?: MEDiagramHtmlType | {mermaid?: MEDiagramHtmlType; flowchart?: MEDiagramHtmlType; sequence?: MEDiagramHtmlType; "vega-lite"?: MEDiagramHtmlType; plantuml?: MEDiagramHtmlType}
-  
+    diagramHtmlType?: MEDiagramHtmlType | {mermaid?: MEDiagramHtmlType; flowchart?: MEDiagramHtmlType; sequence?: MEDiagramHtmlType; "vega-lite"?: MEDiagramHtmlType; plantuml?: MEDiagramHtmlType};
+
+    staticBlockHtmlRenderer?: (options: MEBlockRendererStaticRenderOptions, renderedHtml: string)=>Promise<string>;
+    staticNodeHtmlRenderer?: (options: MENodeRendererStaticRenderOptions, renderedHtml: string)=>Promise<string>;
+
     // Markdown extensions
     superSubScript?: boolean;
     footnote?: boolean;
