@@ -45,3 +45,88 @@ describe('resolveItems', () => {
     expect(isActive).toHaveBeenCalled()
   })
 })
+
+import { getActiveMap } from '@/packages/plugins/bubbleToolbar/buttons'
+import { MEBlockData, MECursorState } from '@/packages/types'
+
+// Helper: build a fake content tree with one paragraph block of given text.
+const buildContent = (paragraphs: { id: string; text: string }[]): MEBlockData => ({
+  id: 'root',
+  type: 'document',
+  children: paragraphs.map(p => ({
+    id: p.id,
+    type: 'paragraph',
+    text: p.text,
+  })),
+}) as any
+
+const items = (cmd: string) => [
+  {
+    cmdName: cmd,
+    tooltip: cmd,
+    icon: '',
+    isActive: ({ formats }: { formats: any[] }) => formats.some(f => f.type === ({
+      bold: 'strong', italic: 'em', inline_code: 'inline_code',
+    }[cmd] ?? cmd)),
+    isEnabled: () => true,
+  },
+]
+
+describe('getActiveMap', () => {
+  test('selection fully inside <strong> → bold:true', () => {
+    const content = buildContent([{ id: 'b1', text: 'hello **world** rest' }])
+    const cursor: MECursorState = {
+      anchor: { offset: 8 }, focus: { offset: 13 },  // inside the bolded text
+      anchorBlockId: 'b1', focusBlockId: 'b1',
+      isSameBlock: true, isCollapsed: false,
+    }
+    const map = getActiveMap(items('bold'), cursor, content)
+    expect(map.bold).toBe(true)
+  })
+
+  test('selection spans two blocks where only first is bold → bold:false (intersection)', () => {
+    const content = buildContent([
+      { id: 'b1', text: '**all bold here**' },
+      { id: 'b2', text: 'plain text here' },
+    ])
+    const cursor: MECursorState = {
+      anchor: { offset: 2 }, focus: { offset: 5 },
+      anchorBlockId: 'b1', focusBlockId: 'b2',
+      isSameBlock: false, isCollapsed: false,
+    }
+    const map = getActiveMap(items('bold'), cursor, content)
+    expect(map.bold).toBe(false)
+  })
+
+  test('empty selection → all false', () => {
+    const content = buildContent([{ id: 'b1', text: 'plain' }])
+    const cursor: MECursorState = {
+      anchor: { offset: 0 }, focus: { offset: 0 },
+      anchorBlockId: 'b1', focusBlockId: 'b1',
+      isSameBlock: true, isCollapsed: true,
+    }
+    const map = getActiveMap(items('bold'), cursor, content)
+    expect(map.bold).toBe(false)
+  })
+
+  test('isActive throwing → that entry false + warn', () => {
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {})
+    const content = buildContent([{ id: 'b1', text: 'hello' }])
+    const cursor: MECursorState = {
+      anchor: { offset: 0 }, focus: { offset: 5 },
+      anchorBlockId: 'b1', focusBlockId: 'b1',
+      isSameBlock: true, isCollapsed: false,
+    }
+    const bad = [{
+      cmdName: 'crash',
+      tooltip: '',
+      icon: '',
+      isActive: () => { throw new Error('boom') },
+      isEnabled: () => true,
+    }]
+    const map = getActiveMap(bad, cursor, content)
+    expect(map.crash).toBe(false)
+    expect(warn).toHaveBeenCalled()
+    warn.mockRestore()
+  })
+})
