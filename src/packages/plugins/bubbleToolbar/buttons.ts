@@ -194,3 +194,37 @@ export function getActiveMap(
   }
   return map
 }
+
+const SCOPED_INLINE = new Set(['inline_code', 'inline_math'])
+
+export function getEnabledMap(
+  items: ResolvedItem[],
+  cursor: MECursorState,
+  contentData: MEBlockData,
+): Record<string, boolean> {
+  const map: Record<string, boolean> = {}
+  if (!cursor.anchorBlockId) {
+    for (const it of items) if (it.cmdName !== '|') map[it.cmdName] = true
+    return map
+  }
+
+  let scoped: string | null = null
+  try {
+    const block = findBlock(contentData, cursor.anchorBlockId)
+    if (block && cursor.anchorBlockId === cursor.focusBlockId) {
+      const start = Math.min(cursor.anchor.offset, cursor.focus.offset)
+      const end = Math.max(cursor.anchor.offset, cursor.focus.offset)
+      const formats = formatsForBlock(block, start, end)
+      const hit = formats.find(f => SCOPED_INLINE.has(f.type))
+      if (hit) scoped = hit.type
+    }
+  } catch (e) {
+    console.warn('[bubbleToolbar] getEnabledMap failed', e)
+  }
+
+  for (const it of items) {
+    if (it.cmdName === '|') continue
+    map[it.cmdName] = !scoped || it.cmdName === scoped
+  }
+  return map
+}

@@ -219,3 +219,36 @@ describe('Toolbar mousedown', () => {
     tb.destroy()
   })
 })
+
+describe('Toolbar disabled state', () => {
+  test('show with enabledMap toggles disabled class + aria-disabled', () => {
+    document.body.innerHTML = ''
+    const tb = new Toolbar(items, { offset: 8, onClick: jest.fn() })
+    Object.defineProperty(tb.rootEl, 'getBoundingClientRect', {
+      value: () => ({ left: 0, top: 0, right: 200, bottom: 40, width: 200, height: 40 }),
+      configurable: true,
+    })
+    tb.show(fakeRect, { bold: false, italic: false }, { bold: false, italic: true })
+    const boldBtn = tb.rootEl.querySelector('button[data-cmd="bold"]') as HTMLButtonElement
+    const italicBtn = tb.rootEl.querySelector('button[data-cmd="italic"]') as HTMLButtonElement
+    expect(boldBtn.classList.contains('me-bubble-toolbar__btn--disabled')).toBe(true)
+    expect(boldBtn.getAttribute('aria-disabled')).toBe('true')
+    expect(italicBtn.classList.contains('me-bubble-toolbar__btn--disabled')).toBe(false)
+    tb.destroy()
+  })
+
+  test('clicking a disabled button does not trigger onClick', () => {
+    document.body.innerHTML = ''
+    const onClick = jest.fn()
+    const tb = new Toolbar(items, { offset: 8, onClick })
+    Object.defineProperty(tb.rootEl, 'getBoundingClientRect', {
+      value: () => ({ left: 0, top: 0, right: 200, bottom: 40, width: 200, height: 40 }),
+      configurable: true,
+    })
+    tb.show(fakeRect, { bold: false, italic: false }, { bold: false, italic: true })
+    const boldBtn = tb.rootEl.querySelector('button[data-cmd="bold"]') as HTMLButtonElement
+    boldBtn.click()
+    expect(onClick).not.toHaveBeenCalled()
+    tb.destroy()
+  })
+})

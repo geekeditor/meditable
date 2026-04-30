@@ -13,7 +13,7 @@ const ROOT_CLS = 'me-bubble-toolbar'
 const BTN_CLS = 'me-bubble-toolbar__btn'
 const SEP_CLS = 'me-bubble-toolbar__sep'
 const ACTIVE_CLS = 'me-bubble-toolbar__btn--active'
-const DISABLED_CLS = 'me-bubble-toolbar__btn--disabled' // eslint-disable-line @typescript-eslint/no-unused-vars
+const DISABLED_CLS = 'me-bubble-toolbar__btn--disabled'
 
 export default class Toolbar {
   readonly rootEl: HTMLDivElement
@@ -70,16 +70,25 @@ export default class Toolbar {
 
   get visible() { return this._visible }
 
-  show(rect: DOMRect, activeMap: Record<string, boolean>) {
+  show(
+    rect: DOMRect,
+    activeMap: Record<string, boolean>,
+    enabledMap?: Record<string, boolean>,
+  ) {
     if (!this.rootEl.parentElement) document.body.appendChild(this.rootEl)  // re-attach if destroyed-and-revived
     this.applyActive(activeMap)
+    this.applyEnabled(enabledMap ?? {})
     this.rootEl.style.visibility = 'visible'
     this._visible = true
     this.position(rect)
   }
 
-  update(activeMap: Record<string, boolean>) {
+  update(
+    activeMap: Record<string, boolean>,
+    enabledMap?: Record<string, boolean>,
+  ) {
     this.applyActive(activeMap)
+    if (enabledMap) this.applyEnabled(enabledMap)
   }
 
   hide() {
@@ -149,6 +158,16 @@ export default class Toolbar {
       const isActive = !!activeMap[cmd]
       btn.classList.toggle(ACTIVE_CLS, isActive)
       btn.setAttribute('aria-pressed', String(isActive))
+    }
+  }
+
+  private applyEnabled(enabledMap: Record<string, boolean>) {
+    for (const [cmd, btn] of this.buttonEls) {
+      const enabled = enabledMap[cmd] !== false
+      btn.classList.toggle(DISABLED_CLS, !enabled)
+      btn.setAttribute('aria-disabled', String(!enabled))
+      if (!enabled) btn.setAttribute('disabled', '')
+      else          btn.removeAttribute('disabled')
     }
   }
 }

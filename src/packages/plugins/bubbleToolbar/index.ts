@@ -3,7 +3,7 @@ import { MEInstance, MECursorState, MEPluginOptions } from '@/packages/types'
 import { debounce } from '@/packages/utils/utils'
 import Toolbar, { ToolbarItem } from './toolbar'
 import {
-  resolveItems, getActiveMap, ResolvedItem,
+  resolveItems, getActiveMap, getEnabledMap, ResolvedItem,
   BLACKLIST_BLOCK_TYPES, CustomButtonItem,
 } from './buttons'
 
@@ -20,6 +20,7 @@ export default class MEPluginBubbleToolbar extends MEPluginBase {
   private items!: ResolvedItem[]
   private cachedCursor: MECursorState | null = null
   private lastActiveMap: Record<string, boolean> = {}
+  private lastEnabledMap: Record<string, boolean> = {}
   private updateScheduled!: () => void
   private scrollListener?: () => void
 
@@ -129,7 +130,8 @@ export default class MEPluginBubbleToolbar extends MEPluginBase {
     }
 
     this.lastActiveMap = getActiveMap(this.items, cursor, content.data)
-    this.toolbar.show(rect, this.lastActiveMap)
+    this.lastEnabledMap = getEnabledMap(this.items, cursor, content.data)
+    this.toolbar.show(rect, this.lastActiveMap, this.lastEnabledMap)
   }
 
   private execCmd(cmdName: string) {

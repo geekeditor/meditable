@@ -130,3 +130,36 @@ describe('getActiveMap', () => {
     warn.mockRestore()
   })
 })
+
+import { getEnabledMap } from '@/packages/plugins/bubbleToolbar/buttons'
+
+describe('getEnabledMap', () => {
+  const items2 = [
+    { cmdName: 'bold',        tooltip: '', icon: '', isActive: () => false, isEnabled: () => true },
+    { cmdName: 'inline_code', tooltip: '', icon: '', isActive: () => false, isEnabled: () => true },
+  ]
+
+  test('selection NOT inside scoped inline → all enabled', () => {
+    const content = buildContent([{ id: 'b1', text: 'plain text' }])
+    const cursor: any = {
+      anchor: { offset: 0 }, focus: { offset: 5 },
+      anchorBlockId: 'b1', focusBlockId: 'b1',
+      isSameBlock: true, isCollapsed: false,
+    }
+    const map = getEnabledMap(items2, cursor, content)
+    expect(map.bold).toBe(true)
+    expect(map.inline_code).toBe(true)
+  })
+
+  test('selection inside `code` → only inline_code enabled', () => {
+    const content = buildContent([{ id: 'b1', text: 'see `code` here' }])
+    const cursor: any = {
+      anchor: { offset: 5 }, focus: { offset: 9 },          // inside the backticks
+      anchorBlockId: 'b1', focusBlockId: 'b1',
+      isSameBlock: true, isCollapsed: false,
+    }
+    const map = getEnabledMap(items2, cursor, content)
+    expect(map.bold).toBe(false)
+    expect(map.inline_code).toBe(true)
+  })
+})
