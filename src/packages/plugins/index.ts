@@ -1,2 +1,3 @@
 import MEPluginContextMenu from "./contextMenu"
-export {MEPluginContextMenu}
+import MEPluginBubbleToolbar from "./bubbleToolbar"
+export { MEPluginContextMenu, MEPluginBubbleToolbar }

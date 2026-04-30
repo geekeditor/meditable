@@ -1,5 +1,5 @@
 import MEditable from '@/packages/umd'
-import {MEPluginContextMenu} from './packages/plugins/'
+import {MEPluginContextMenu, MEPluginBubbleToolbar} from './packages/plugins/'
 require("@/index.less")
 const README = require('../README.md')
 
@@ -13,6 +13,7 @@ const allBtn = document.querySelector('#all')
 const clearBtn = document.querySelector('#clear')
 
 MEditable.use(MEPluginContextMenu)
+MEditable.use(MEPluginBubbleToolbar)
 
 const markdown = README.default
 const meditable = new MEditable({ container: editor, locale: {lang: navigator.language} })

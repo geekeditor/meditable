@@ -1,0 +1,59 @@
+.me-bubble-toolbar {
+  position: fixed;
+  display: inline-flex;
+  align-items: center;
+  background: #2a2a2a;
+  color: #f5f5f5;
+  border-radius: 6px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  padding: 4px;
+  user-select: none;
+  font-size: 14px;
+
+  &__btn {
+    appearance: none;
+    background: transparent;
+    border: none;
+    color: inherit;
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    margin: 0 1px;
+    transition: background-color 120ms ease;
+
+    &:hover:not(&--disabled) {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    &:focus-visible {
+      outline: 2px solid #4a9eff;
+      outline-offset: 1px;
+    }
+
+    &--active {
+      background: rgba(74, 158, 255, 0.25);
+      color: #4a9eff;
+    }
+
+    &--disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    svg {
+      pointer-events: none;
+    }
+  }
+
+  &__sep {
+    width: 1px;
+    height: 18px;
+    background: rgba(255, 255, 255, 0.18);
+    margin: 0 4px;
+  }
+}
