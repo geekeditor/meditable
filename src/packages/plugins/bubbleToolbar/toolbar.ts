@@ -19,7 +19,7 @@ export default class Toolbar {
   readonly rootEl: HTMLDivElement
   private buttonEls: Map<string, HTMLButtonElement> = new Map()
   private focusableButtons: HTMLButtonElement[] = []
-  private focusedIndex = 0 // eslint-disable-line @typescript-eslint/no-unused-vars
+  private focusedIndex = 0
   private offset: number
   private onClick: (cmdName: string) => void
   private _visible = false
@@ -37,6 +37,7 @@ export default class Toolbar {
     this.rootEl.style.visibility = 'hidden'
     this.rootEl.style.zIndex = '9999'
     this.renderItems(items)
+    this.rootEl.addEventListener('keydown', this.handleKeydown)
   }
 
   private renderItems(items: ToolbarItem[]) {
@@ -85,10 +86,45 @@ export default class Toolbar {
   }
 
   destroy() {
+    this.rootEl.removeEventListener('keydown', this.handleKeydown)
     this.rootEl.parentElement?.removeChild(this.rootEl)
     this.buttonEls.clear()
     this.focusableButtons = []
     this._visible = false
+  }
+
+  private handleKeydown = (e: KeyboardEvent) => {
+    const key = e.key
+    const navigable = ['ArrowLeft', 'ArrowRight', 'Home', 'End', 'Enter', ' ']
+    if (!navigable.includes(key)) return
+
+    const idx = this.focusableButtons.findIndex(b => b === document.activeElement)
+    if (idx < 0) return
+
+    let next = idx
+    if (key === 'ArrowRight') next = (idx + 1) % this.focusableButtons.length
+    else if (key === 'ArrowLeft') next = (idx - 1 + this.focusableButtons.length) % this.focusableButtons.length
+    else if (key === 'Home') next = 0
+    else if (key === 'End') next = this.focusableButtons.length - 1
+    else if (key === 'Enter' || key === ' ') {
+      const cmd = this.focusableButtons[idx].dataset.cmd
+      if (cmd) this.onClick(cmd)
+      e.preventDefault()
+      return
+    }
+
+    if (next !== idx) this.setFocus(next)
+    e.preventDefault()
+  }
+
+  private setFocus(index: number) {
+    if (this.focusableButtons[this.focusedIndex]) {
+      this.focusableButtons[this.focusedIndex].tabIndex = -1
+    }
+    this.focusedIndex = index
+    const btn = this.focusableButtons[index]
+    btn.tabIndex = 0
+    btn.focus()
   }
 
   private position(rect: DOMRect) {

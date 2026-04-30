@@ -127,3 +127,78 @@ describe('Toolbar.update', () => {
     expect(tb.rootEl.style.transform).toBe(before)
   })
 })
+
+describe('Toolbar keyboard navigation', () => {
+  let onClick: jest.Mock
+  let tb: Toolbar
+  let buttons: HTMLButtonElement[]
+  beforeEach(() => {
+    onClick = jest.fn()
+    document.body.innerHTML = ''
+    tb = new Toolbar(items, { offset: 8, onClick })
+    Object.defineProperty(tb.rootEl, 'getBoundingClientRect', {
+      value: () => ({ left: 0, top: 0, right: 200, bottom: 40, width: 200, height: 40 }),
+      configurable: true,
+    })
+    tb.show(fakeRect, {})
+    buttons = Array.from(tb.rootEl.querySelectorAll('button'))
+  })
+  afterEach(() => tb.destroy())
+
+  const press = (key: string) => {
+    const ev = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true })
+    tb.rootEl.dispatchEvent(ev)
+    return ev
+  }
+
+  test('initial: first button tabindex=0, others -1', () => {
+    expect(buttons[0].tabIndex).toBe(0)
+    expect(buttons[1].tabIndex).toBe(-1)
+  })
+
+  test('ArrowRight moves focus to next button', () => {
+    buttons[0].focus()
+    press('ArrowRight')
+    expect(document.activeElement).toBe(buttons[1])
+    expect(buttons[0].tabIndex).toBe(-1)
+    expect(buttons[1].tabIndex).toBe(0)
+  })
+
+  test('ArrowRight on last wraps to first', () => {
+    buttons[1].focus()
+    press('ArrowRight')
+    expect(document.activeElement).toBe(buttons[0])
+  })
+
+  test('ArrowLeft on first wraps to last', () => {
+    buttons[0].focus()
+    press('ArrowLeft')
+    expect(document.activeElement).toBe(buttons[1])
+  })
+
+  test('Home jumps to first, End to last', () => {
+    buttons[1].focus()
+    press('Home')
+    expect(document.activeElement).toBe(buttons[0])
+    press('End')
+    expect(document.activeElement).toBe(buttons[1])
+  })
+
+  test('Enter triggers onClick(cmdName) for focused button', () => {
+    buttons[0].focus()
+    press('Enter')
+    expect(onClick).toHaveBeenCalledWith('bold')
+  })
+
+  test('Space triggers onClick', () => {
+    buttons[1].focus()
+    press(' ')
+    expect(onClick).toHaveBeenCalledWith('italic')
+  })
+
+  test('navigation keys preventDefault to stop page scroll', () => {
+    buttons[0].focus()
+    const ev = press('ArrowRight')
+    expect(ev.defaultPrevented).toBe(true)
+  })
+})
