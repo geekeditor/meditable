@@ -53,6 +53,27 @@ export default class MEPluginBubbleToolbar extends MEPluginBase {
     event.on('mouseup', this.updateScheduled)
     event.on('keyup', this.updateScheduled)
 
+    this.toolbar.rootEl.addEventListener('focusin', () => {
+      if (!this.cachedCursor) {
+        this.cachedCursor = this.instance.getCursor()
+      }
+    })
+    this.toolbar.rootEl.addEventListener('focusout', (e) => {
+      const next = (e as FocusEvent).relatedTarget as Node | null
+      if (!next || !this.toolbar.rootEl.contains(next)) {
+        this.cachedCursor = null
+      }
+    })
+
+    this.mutableListeners.on(this.instance.context.editable.document, 'keydown', (e) => {
+      const ke = e as KeyboardEvent
+      if (ke.key === 'Escape' && this.toolbar.visible) {
+        this.toolbar.hide()
+        this.cachedCursor = null
+        this.instance.context.editable.holder.focus()
+      }
+    })
+
     return true
   }
 

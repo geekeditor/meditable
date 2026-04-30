@@ -101,4 +101,40 @@ describe('MEPluginBubbleToolbar — show on real selection', () => {
     expect(spy).toHaveBeenCalledWith('bold')
     spy.mockRestore()
   })
+
+  test('focusin caches cursor; Enter on button calls setCursor before execCommand', () => {
+    setRangeOverFirstText()
+    const plugin: any = editor.context.plugin.plugins.bubbleToolbar
+    plugin.handleSelectionChange()
+
+    const setCursorSpy = jest.spyOn(editor, 'setCursor')
+    const execSpy = jest.spyOn(editor.context.command, 'execCommand')
+
+    const root = document.querySelector('.me-bubble-toolbar') as HTMLElement
+    const boldBtn = root.querySelector('button[data-cmd="bold"]') as HTMLButtonElement
+    boldBtn.focus()                        // triggers focusin
+
+    const ev = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true })
+    root.dispatchEvent(ev)
+
+    expect(setCursorSpy).toHaveBeenCalled()
+    expect(execSpy).toHaveBeenCalledWith('bold')
+    expect(setCursorSpy.mock.invocationCallOrder[0])
+      .toBeLessThan(execSpy.mock.invocationCallOrder[0])
+
+    setCursorSpy.mockRestore()
+    execSpy.mockRestore()
+  })
+
+  test('Escape hides the toolbar', () => {
+    setRangeOverFirstText()
+    const plugin: any = editor.context.plugin.plugins.bubbleToolbar
+    plugin.handleSelectionChange()
+    const root = document.querySelector('.me-bubble-toolbar') as HTMLElement
+    expect(root.style.visibility).toBe('visible')
+
+    const ev = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })
+    editor.context.editable.document.dispatchEvent(ev)
+    expect(root.style.visibility).toBe('hidden')
+  })
 })
