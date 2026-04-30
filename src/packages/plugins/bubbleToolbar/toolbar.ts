@@ -72,7 +72,7 @@ export default class Toolbar {
     this.applyActive(activeMap)
     this.rootEl.style.visibility = 'visible'
     this._visible = true
-    // position will be added in a later task
+    this.position(rect)
   }
 
   update(activeMap: Record<string, boolean>) {
@@ -89,6 +89,21 @@ export default class Toolbar {
     this.buttonEls.clear()
     this.focusableButtons = []
     this._visible = false
+  }
+
+  private position(rect: DOMRect) {
+    const tb = this.rootEl.getBoundingClientRect()
+    const vw = window.innerWidth
+    const vh = window.innerHeight
+
+    let x = rect.left + rect.width / 2 - tb.width / 2
+    x = Math.max(8, Math.min(x, vw - tb.width - 8))
+
+    let y = rect.top - tb.height - this.offset
+    if (y < 8) y = rect.bottom + this.offset
+    if (y + tb.height > vh - 8) y = Math.max(8, vh - tb.height - 8)
+
+    this.rootEl.style.transform = `translate3d(${x}px, ${y}px, 0)`
   }
 
   private applyActive(activeMap: Record<string, boolean>) {
