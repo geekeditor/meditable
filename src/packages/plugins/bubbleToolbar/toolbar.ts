@@ -38,6 +38,7 @@ export default class Toolbar {
     this.rootEl.style.zIndex = '9999'
     this.renderItems(items)
     this.rootEl.addEventListener('keydown', this.handleKeydown)
+    document.body.appendChild(this.rootEl)
   }
 
   private renderItems(items: ToolbarItem[]) {
@@ -70,7 +71,7 @@ export default class Toolbar {
   get visible() { return this._visible }
 
   show(rect: DOMRect, activeMap: Record<string, boolean>) {
-    if (!this.rootEl.parentElement) document.body.appendChild(this.rootEl)
+    if (!this.rootEl.parentElement) document.body.appendChild(this.rootEl)  // re-attach if destroyed-and-revived
     this.applyActive(activeMap)
     this.rootEl.style.visibility = 'visible'
     this._visible = true
