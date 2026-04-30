@@ -202,3 +202,20 @@ describe('Toolbar keyboard navigation', () => {
     expect(ev.defaultPrevented).toBe(true)
   })
 })
+
+describe('Toolbar mousedown', () => {
+  test('mousedown on a button calls preventDefault to keep editor selection', () => {
+    document.body.innerHTML = ''
+    const tb = new Toolbar(items, { offset: 8, onClick: jest.fn() })
+    Object.defineProperty(tb.rootEl, 'getBoundingClientRect', {
+      value: () => ({ left: 0, top: 0, right: 200, bottom: 40, width: 200, height: 40 }),
+      configurable: true,
+    })
+    tb.show(fakeRect, {})
+    const btn = tb.rootEl.querySelector('button')!
+    const ev = new MouseEvent('mousedown', { bubbles: true, cancelable: true })
+    btn.dispatchEvent(ev)
+    expect(ev.defaultPrevented).toBe(true)
+    tb.destroy()
+  })
+})

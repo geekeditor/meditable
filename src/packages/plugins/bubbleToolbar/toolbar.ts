@@ -59,6 +59,7 @@ export default class Toolbar {
       btn.setAttribute('aria-pressed', 'false')
       btn.tabIndex = this.focusableButtons.length === 0 ? 0 : -1
       btn.innerHTML = it.icon
+      btn.addEventListener('mousedown', e => e.preventDefault())
       btn.addEventListener('click', () => this.onClick(it.cmdName))
       this.rootEl.appendChild(btn)
       this.buttonEls.set(it.cmdName, btn)
