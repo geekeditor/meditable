@@ -34,4 +34,12 @@ export default class MEPlugin extends MEModule {
         return true
     }
 
+    destroy() {
+        for (const name of Object.keys(this.plugins)) {
+            try { this.plugins[name].destroy() } catch (_) {}
+        }
+        this.plugins = {}
+        super.destroy()
+    }
+
 }

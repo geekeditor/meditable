@@ -21,6 +21,7 @@ export default class MEPluginBubbleToolbar extends MEPluginBase {
   private cachedCursor: MECursorState | null = null
   private lastActiveMap: Record<string, boolean> = {}
   private updateScheduled!: () => void
+  private scrollListener?: () => void
 
   constructor(instance: MEInstance, options?: BubbleToolbarOptions) {
     super(instance, options)
@@ -73,6 +74,18 @@ export default class MEPluginBubbleToolbar extends MEPluginBase {
         this.instance.context.editable.holder.focus()
       }
     })
+
+    let rafId = 0
+    const onScrollOrResize = () => {
+      if (rafId) return
+      rafId = requestAnimationFrame(() => {
+        rafId = 0
+        if (this.toolbar.visible) this.handleSelectionChange()
+      })
+    }
+    window.addEventListener('scroll', onScrollOrResize, true)
+    window.addEventListener('resize', onScrollOrResize)
+    this.scrollListener = onScrollOrResize
 
     return true
   }
@@ -130,6 +143,10 @@ export default class MEPluginBubbleToolbar extends MEPluginBase {
   }
 
   destroy() {
+    if (this.scrollListener) {
+      window.removeEventListener('scroll', this.scrollListener, true)
+      window.removeEventListener('resize', this.scrollListener)
+    }
     this.toolbar?.destroy()
     super.destroy()
   }

@@ -137,4 +137,36 @@ describe('MEPluginBubbleToolbar — show on real selection', () => {
     editor.context.editable.document.dispatchEvent(ev)
     expect(root.style.visibility).toBe('hidden')
   })
+
+  test('scroll while toolbar visible re-runs handler (toolbar still visible)', async () => {
+    setRangeOverFirstText()
+    const plugin: any = editor.context.plugin.plugins.bubbleToolbar
+    plugin.handleSelectionChange()
+    const root = document.querySelector('.me-bubble-toolbar') as HTMLElement
+    expect(root.style.visibility).toBe('visible')
+
+    const handlerSpy = jest.spyOn(plugin, 'handleSelectionChange')
+    window.dispatchEvent(new Event('scroll'))
+    await new Promise(r => requestAnimationFrame(() => r(null)))
+    expect(handlerSpy).toHaveBeenCalled()
+    expect(root.style.visibility).toBe('visible')
+    handlerSpy.mockRestore()
+  })
+})
+
+describe('MEPluginBubbleToolbar — destroy', () => {
+  test('editor.destroy() removes the toolbar from document.body', async () => {
+    document.body.innerHTML = ''
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+    MEditable.use(MEPluginBubbleToolbar)
+    const editor = new MEditable({ container })
+    await editor.prepare()
+    editor.setContent('hi')
+    expect(document.querySelector('.me-bubble-toolbar')).toBeTruthy()
+
+    editor.destroy()
+    expect(document.querySelector('.me-bubble-toolbar')).toBeNull()
+    ;(MEPlugin as any).plugins = []
+  })
 })
