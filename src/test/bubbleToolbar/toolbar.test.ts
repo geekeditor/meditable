@@ -92,3 +92,38 @@ describe('Toolbar positioning', () => {
     expect(tb.rootEl.style.transform).toContain('translate3d(816px,')
   })
 })
+
+describe('Toolbar.update', () => {
+  let onClick: jest.Mock
+  let tb: Toolbar
+  beforeEach(() => {
+    onClick = jest.fn()
+    document.body.innerHTML = ''
+    tb = new Toolbar(items, { offset: 8, onClick })
+    Object.defineProperty(tb.rootEl, 'getBoundingClientRect', {
+      value: () => ({ left: 0, top: 0, right: 200, bottom: 40, width: 200, height: 40 }),
+      configurable: true,
+    })
+  })
+  afterEach(() => tb.destroy())
+
+  test('update flips active class on/off', () => {
+    tb.show(fakeRect, { bold: false, italic: false })
+    const boldBtn = tb.rootEl.querySelector('button[data-cmd="bold"]')!
+    expect(boldBtn.classList.contains('me-bubble-toolbar__btn--active')).toBe(false)
+
+    tb.update({ bold: true, italic: false })
+    expect(boldBtn.classList.contains('me-bubble-toolbar__btn--active')).toBe(true)
+    expect(boldBtn.getAttribute('aria-pressed')).toBe('true')
+
+    tb.update({ bold: false, italic: false })
+    expect(boldBtn.classList.contains('me-bubble-toolbar__btn--active')).toBe(false)
+  })
+
+  test('update does not call position()', () => {
+    tb.show(fakeRect, { bold: false, italic: false })
+    const before = tb.rootEl.style.transform
+    tb.update({ bold: true })
+    expect(tb.rootEl.style.transform).toBe(before)
+  })
+})
