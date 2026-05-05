@@ -47,7 +47,9 @@ export const getOffset = (offset, { range: { start, end }, type, tag, anchor, al
         case 'del':
         case 'em':
         case 'inline_code':
-        case 'inline_math': {
+        case 'inline_math':
+        case 'sub':
+        case 'sup': {
             const MARKER_LEN = (type === 'strong' || type === 'del') ? 2 : 1
             if (dis < 0) return 0
             if (dis >= 0 && dis < MARKER_LEN) return -dis
@@ -119,7 +121,9 @@ export const clearFormat = (token, { start, end }) => {
         }
 
         case 'inline_math':
-        case 'inline_code': {
+        case 'inline_code':
+        case 'sub':
+        case 'sup': {
             token.type = 'text'
             token.raw = token.content
             delete token.marker
