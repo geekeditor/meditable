@@ -49,7 +49,11 @@ const COMMAND_TYPE_MAP: Record<string, string> = {
 
 export function defaultIsActive(cmdName: string): (ctx: ActiveCtx) => boolean {
   const target = COMMAND_TYPE_MAP[cmdName] ?? cmdName
-  return ({ formats }) => formats.some(f => f.type === target || f.type === cmdName)
+  return ({ formats }) => formats.some(f =>
+    f.type === target ||
+    f.type === cmdName ||
+    (f.type === 'html_tag' && f.tag === target)
+  )
 }
 
 const alwaysEnabled = () => true

@@ -126,6 +126,23 @@ describe('MEPluginBubbleToolbar — show on real selection', () => {
     execSpy.mockRestore()
   })
 
+  test('Tab while toolbar is visible moves focus to first button', () => {
+    setRangeOverFirstText()
+    const plugin: any = editor.context.plugin.plugins.bubbleToolbar
+    plugin.handleSelectionChange()
+    const root = document.querySelector('.me-bubble-toolbar') as HTMLElement
+    expect(root.style.visibility).toBe('visible')
+
+    const firstBtn = root.querySelector('button') as HTMLButtonElement
+    expect(document.activeElement).not.toBe(firstBtn)
+
+    const ev = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true })
+    editor.context.editable.document.dispatchEvent(ev)
+
+    expect(ev.defaultPrevented).toBe(true)
+    expect(document.activeElement).toBe(firstBtn)
+  })
+
   test('Escape hides the toolbar', () => {
     setRangeOverFirstText()
     const plugin: any = editor.context.plugin.plugins.bubbleToolbar
@@ -135,6 +152,20 @@ describe('MEPluginBubbleToolbar — show on real selection', () => {
 
     const ev = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })
     editor.context.editable.document.dispatchEvent(ev)
+    expect(root.style.visibility).toBe('hidden')
+  })
+
+  test('cross-block selection (anchorBlockId !== focusBlockId) → toolbar hidden', () => {
+    setRangeOverFirstText()
+    const plugin: any = editor.context.plugin.plugins.bubbleToolbar
+    // Force getCursor to report a cross-block selection
+    jest.spyOn(editor, 'getCursor').mockReturnValue({
+      anchor: { offset: 0 }, focus: { offset: 5 },
+      anchorBlockId: 'b1', focusBlockId: 'b2',
+      isSameBlock: false, isCollapsed: false,
+    } as any)
+    plugin.handleSelectionChange()
+    const root = document.querySelector('.me-bubble-toolbar') as HTMLElement
     expect(root.style.visibility).toBe('hidden')
   })
 

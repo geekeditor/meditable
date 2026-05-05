@@ -76,6 +76,19 @@ export default class MEPluginBubbleToolbar extends MEPluginBase {
       }
     })
 
+    // Tab into the toolbar from the editor when toolbar is visible.
+    // Capture phase so we run before the editor's own Tab (insertTab) handler.
+    this.mutableListeners.on(this.instance.context.editable.document, 'keydown', (e) => {
+      const ke = e as KeyboardEvent
+      if (ke.key !== 'Tab' || ke.shiftKey) return
+      if (!this.toolbar.visible) return
+      if (this.toolbar.rootEl.contains(document.activeElement)) return
+      this.cachedCursor = this.instance.getCursor()
+      ke.preventDefault()
+      ke.stopPropagation()
+      this.toolbar.focusFirst()
+    }, true)
+
     let rafId = 0
     const onScrollOrResize = () => {
       if (rafId) return
@@ -111,6 +124,12 @@ export default class MEPluginBubbleToolbar extends MEPluginBase {
 
     const cursor = this.instance.getCursor()
     if (!cursor.anchorBlockId) return this.toolbar.hide()
+
+    // Cross-block selection: format command only handles same-block, so don't
+    // surface buttons that would silently no-op.
+    if (cursor.focusBlockId && cursor.anchorBlockId !== cursor.focusBlockId) {
+      return this.toolbar.hide()
+    }
 
     const anchorBlock = content.queryBlock(cursor.anchorBlockId)
     if (anchorBlock && BLACKLIST_BLOCK_TYPES.has(anchorBlock.type)) {

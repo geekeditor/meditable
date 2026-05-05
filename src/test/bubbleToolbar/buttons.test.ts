@@ -109,6 +109,42 @@ describe('getActiveMap', () => {
     expect(map.bold).toBe(false)
   })
 
+  test('selection inside <u>...</u> → underline:true (defaultIsActive matches html_tag.tag)', () => {
+    const content = buildContent([{ id: 'b1', text: 'a <u>under</u> b' }])
+    const cursor: MECursorState = {
+      anchor: { offset: 5 }, focus: { offset: 10 },  // inside the <u>under</u>
+      anchorBlockId: 'b1', focusBlockId: 'b1',
+      isSameBlock: true, isCollapsed: false,
+    }
+    const resolved = resolveItems(['underline'], new Set(['underline']))
+    const map = getActiveMap(resolved, cursor, content)
+    expect(map.underline).toBe(true)
+  })
+
+  test('selection inside <mark>...</mark> → mark:true', () => {
+    const content = buildContent([{ id: 'b1', text: 'a <mark>hi</mark> b' }])
+    const cursor: MECursorState = {
+      anchor: { offset: 8 }, focus: { offset: 10 },  // inside the <mark>hi</mark>
+      anchorBlockId: 'b1', focusBlockId: 'b1',
+      isSameBlock: true, isCollapsed: false,
+    }
+    const resolved = resolveItems(['mark'], new Set(['mark']))
+    const map = getActiveMap(resolved, cursor, content)
+    expect(map.mark).toBe(true)
+  })
+
+  test('selection inside ^sup^ → superscript:true', () => {
+    const content = buildContent([{ id: 'b1', text: 'a ^sup^ b' }])
+    const cursor: MECursorState = {
+      anchor: { offset: 3 }, focus: { offset: 6 },  // inside ^sup^
+      anchorBlockId: 'b1', focusBlockId: 'b1',
+      isSameBlock: true, isCollapsed: false,
+    }
+    const resolved = resolveItems(['superscript'], new Set(['superscript']))
+    const map = getActiveMap(resolved, cursor, content)
+    expect(map.superscript).toBe(true)
+  })
+
   test('isActive throwing → that entry false + warn', () => {
     const warn = jest.spyOn(console, 'warn').mockImplementation(() => {})
     const content = buildContent([{ id: 'b1', text: 'hello' }])

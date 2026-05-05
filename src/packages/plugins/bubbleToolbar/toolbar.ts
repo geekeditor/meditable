@@ -96,6 +96,11 @@ export default class Toolbar {
     this._visible = false
   }
 
+  focusFirst() {
+    if (this.focusableButtons.length === 0) return
+    this.setFocus(0)
+  }
+
   destroy() {
     this.rootEl.removeEventListener('keydown', this.handleKeydown)
     this.rootEl.parentElement?.removeChild(this.rootEl)
