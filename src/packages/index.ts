@@ -15,6 +15,7 @@ import { markdownToHtml, htmlToMarkdown } from "./utils/markdownHtml";
 
 export { HTMLParser, MarkdownToState, StateToMarkdown, HtmlToMarkdown, StateToHtml, StateToPlainText, tokenizer, filterOutline, flattenToOutline, markdownToHtml, htmlToMarkdown }
 export type { MarkdownToHtmlOptions } from "./utils/markdownHtml";
+export { MEPluginContextMenu, MEPluginBubbleToolbar } from "./plugins";
 
 
 export const DEFAULT_OPTIONS: MEOptions = {
